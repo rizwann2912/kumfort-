@@ -133,10 +133,9 @@ CORS_ALLOW_CREDENTIALS = True
 # Custom User Model
 AUTH_USER_MODEL = "accounts.User"
 
-# Twilio SMS Configuration
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', '')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '')
-TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', '')
+MSG91_AUTH_KEY = os.getenv("MSG91_AUTH_KEY")
+MSG91_OTP_FLOW_ID = os.getenv("MSG91_OTP_FLOW_ID")
+MSG91_SENDER_ID = os.getenv("MSG91_SENDER_ID", "SCHOOLVAN")
 
 # OTP Configuration
 OTP_EXPIRY_MINUTES = 10

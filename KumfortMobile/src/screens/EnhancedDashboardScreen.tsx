@@ -8,10 +8,15 @@ import {
   Animated,
   Dimensions,
   Switch,
+  Alert,
 } from 'react-native';
 import { Colors } from '../../constants/theme';
 import GPSTrackingCard from '../components/GPSTrackingCard';
 import VanTrackingCard from '../components/VanTrackingCard';
+import VanLocationMap from '../components/VanLocationMap';
+import LiveStatusCard from '../components/LiveStatusCard';
+import SideMenu from '../components/SideMenu';
+import NewParentDashboard from './NewParentDashboard';
 import { LocationData } from '../services/locationService';
 
 interface EnhancedDashboardScreenProps {
@@ -71,6 +76,9 @@ export default function EnhancedDashboardScreen({ user, token, onLogout, onUpdat
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isTracking, setIsTracking] = useState(true);
+  const [sideMenuVisible, setSideMenuVisible] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState<LocationData | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -108,8 +116,49 @@ export default function EnhancedDashboardScreen({ user, token, onLogout, onUpdat
       child: '👶',
       school: '🏫',
       grade: '📚',
+      menu: '☰',
+      arrow: '→',
     };
     return icons[name as keyof typeof icons] || '🏠';
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    // Simulate refresh
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
+  const handleCallDriver = () => {
+    Alert.alert(
+      'Call Driver',
+      `Call ${vanInfo.driverName} at ${vanInfo.driverPhone}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Call', onPress: () => {
+          console.log('Calling driver:', vanInfo.driverPhone);
+        }}
+      ]
+    );
+  };
+
+  const handleMenuItemPress = (itemId: string) => {
+    console.log('Menu item pressed:', itemId);
+    // Handle different menu items
+    switch (itemId) {
+      case 'children':
+        // Navigate to children screen
+        break;
+      case 'van_details':
+        // Show van details
+        break;
+      case 'notifications':
+        // Open notifications settings
+        break;
+      default:
+        console.log('Menu item not implemented:', itemId);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -129,6 +178,18 @@ export default function EnhancedDashboardScreen({ user, token, onLogout, onUpdat
       default: return status;
     }
   };
+
+  // Use new parent dashboard for parents
+  if (user.user_type === 'parent') {
+    return (
+      <NewParentDashboard
+        user={user}
+        token={token}
+        onLogout={onLogout}
+        onUpdateProfile={onUpdateProfile}
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>
